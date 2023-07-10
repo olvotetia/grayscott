@@ -1,0 +1,37 @@
+#version 460
+
+// === CPU/GPU interface ===
+//
+// Any modification to the following declarations may call for matching
+// modifications to the CPU-side code!
+
+// Workgroup dimensions
+layout(local_size_x_id = 0, local_size_y_id = 1) in;
+
+// Scale factor from simulation output to color palette position
+layout(constant_id = 2) const float amplitude_scale = 2.0;
+
+// Input from the simulation, output to the screen
+layout(set = 0, binding = 0) restrict readonly buffer InputData {
+    float[] input_data;
+};
+layout(set = 0, binding = 1) uniform restrict writeonly image2D output_image;
+
+// Color palette used for rendering
+layout(set = 1, binding = 0) uniform sampler1D palette;
+
+// === GPU-side code ===
+
+// What each shader invocation does
+void main() {
+    // Find out which texel we shall process
+    const uint row_width = gl_NumWorkGroups.x * gl_WorkGroupSize.x;
+    const uint input_idx = gl_GlobalInvocationID.y * row_width + gl_GlobalInvocationID.x;
+    const float data_point = input_data[input_idx];
+
+    // Compute the corresponding interpolated palette color
+    const vec4 color = texture(palette, amplitude_scale * data_point);
+
+    // Set the corresponding screen pixel
+    imageStore(output_image, ivec2(gl_GlobalInvocationID.xy), color);
+}

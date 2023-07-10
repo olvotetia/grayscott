@@ -1,0 +1,23 @@
+[package]
+name = "compute_block"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+clap = { workspace = true, features = ["env"] }
+compute = { workspace = true, features = ["cpu"] }
+compute_autovec.workspace = true
+data.workspace = true
+hwlocality.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+compute = { workspace = true, features = ["criterion"] }
+
+# Criterion workarounds for lack of stable benchmark harness
+[[bench]]
+name = "benchmark"
+harness = false
+#
+[lib]
+bench = false

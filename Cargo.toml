@@ -1,0 +1,127 @@
+[workspace]
+members = [
+    "compute/autovec",
+    "compute/block",
+    "compute/gpu/naive",
+    "compute/gpu/specialized",
+    "compute/manualvec",
+    "compute/naive",
+    "compute/parallel",
+    "compute/regular",
+    "compute/selector",
+    "compute/shared",
+    "data",
+    "data-to-pics",
+    "livesim",
+    "simulate",
+    "ui",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+
+[workspace.dependencies]
+# Used for error propagation and backtraces in final binaries
+anyhow = "1.0"
+
+# Used to safely manipulate data as bytes
+bytemuck = "1.13"
+
+# Used for various feature flag wrangling purposes
+cfg-if = "1.0"
+
+# Used for GPU-style small-matrix linear algebra
+cgmath = "0.18"
+
+# Used when processing user CLI arguments in binaries
+clap = { version = "4.3", features = ["derive"] }
+
+# Used when visualizing data
+colorous = "1.0"
+
+# Used to lay out data the way GPUs like
+crevice = "0.13"
+
+# Used for microbenchmarking
+criterion = { version = "0.5", default-features = false }
+
+# Used for scheduling work over multiple threads
+crossbeam-channel = "0.5"
+
+# Standard OS directories (used for GPU pipeline cache storage)
+directories = "5.0"
+
+# Used for tests that emit logs
+env_logger = "0.10"
+
+# Used when saving raw data to files
+hdf5 = { version = "0.8", features = ["lzf"] }
+
+# Used for cache locality optimizations
+# FIXME: Switch to a fixed release once they are available
+hwlocality = { git = "https://github.com/HadrienG2/hwlocality.git" }
+
+# Used for progress report in the binaries
+indicatif = "0.17"
+
+# Used when exporting visualizations as images
+image = { version = "0.24", default-features = false, features = ["png"] }
+
+# Used to log diagnostic info from third-party libraries (e.g. Vulkan)
+log = "0.4"
+
+# Basic multidimensional array abstraction
+ndarray = "0.15"
+
+# Data-parallelism library
+rayon = "1.7"
+
+# Intrinsics-based SIMD backend
+safe_arch = "0.6"
+
+# Used to safely handle self-referential data
+self_cell = "1.0"
+
+# Autovectorization-based SIMD backend
+slipstream = "0.2.1"
+
+# Syslog-based log output
+syslog = "6.1"
+
+# Used to ease writing new error types
+thiserror = "1.0"
+
+# Interface to the Vulkan GPU library
+# TODO: Go back to upstream once fix is merged
+vulkano = { git = "https://github.com/HadrienG2/vulkano.git", branch = "fix-debug-utils-name-uaf-v0.33" }
+vulkano-shaders = { git = "https://github.com/HadrienG2/vulkano.git", branch = "fix-debug-utils-name-uaf-v0.33" }
+vulkano-win = { git = "https://github.com/HadrienG2/vulkano.git", branch = "fix-debug-utils-name-uaf-v0.33" }
+
+# Used to create windows
+winit = "0.28"
+
+# Expose crates from this project to other crates in this project
+compute.path = "compute/shared"
+compute_autovec.path = "compute/autovec"
+compute_gpu_naive.path = "compute/gpu/naive"
+compute_gpu_specialized.path = "compute/gpu/specialized"
+compute_block.path = "compute/block"
+compute_manualvec.path = "compute/manualvec"
+compute_naive.path = "compute/naive"
+compute_parallel.path = "compute/parallel"
+compute_regular.path = "compute/regular"
+compute_selector.path = "compute/selector"
+data.path = "data"
+ui.path = "ui"
+
+[profile.dev]
+# Keep the runtime speed of debug builds reasonable
+opt-level = 1
+
+[profile.release]
+# Good for perf profiling
+# TODO: Switch to a narrower setting once rust 1.70 is old enough
+debug = 1
+# Reproducible performance at the cost of longer compile times
+codegen-units = 1

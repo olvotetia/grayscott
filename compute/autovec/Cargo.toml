@@ -1,0 +1,21 @@
+[package]
+name = "compute_autovec"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cfg-if.workspace = true
+compute = { workspace = true, features = ["cpu"] }
+data = { workspace = true, features = ["slipstream"] }
+slipstream.workspace = true
+
+[dev-dependencies]
+compute = { workspace = true, features = ["criterion"] }
+
+# Criterion workarounds for lack of stable benchmark harness
+[[bench]]
+name = "benchmark"
+harness = false
+#
+[lib]
+bench = false

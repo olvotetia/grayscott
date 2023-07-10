@@ -1,0 +1,20 @@
+[package]
+name = "compute_regular"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+compute = { workspace = true, features = ["cpu"] }
+data.workspace = true
+ndarray.workspace = true
+
+[dev-dependencies]
+compute = { workspace = true, features = ["criterion"] }
+
+# Criterion workarounds for lack of stable benchmark harness
+[[bench]]
+name = "benchmark"
+harness = false
+#
+[lib]
+bench = false
